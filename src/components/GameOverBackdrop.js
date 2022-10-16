@@ -16,7 +16,7 @@ const GameOverBackdrop = () => {
           <Typography variant="h1" component="h2">
             You lost!
           </Typography>
-          <Typography variant="h5" component="subtitle1">
+          <Typography variant="h5" component="h6">
             The correct word was ELEPHANT!
           </Typography>
         </div>

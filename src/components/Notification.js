@@ -3,15 +3,17 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
-const Notification = () => {
-  const handleClose = () => {};
+const Notification = ({ showNotification, onClose }) => {
+  const handleClose = () => {
+    onClose(false);
+  };
 
   return (
     <div>
       <Snackbar
-        open={false}
+        open={showNotification}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={handleClose}
       >
         <Alert
