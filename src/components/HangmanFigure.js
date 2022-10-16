@@ -2,7 +2,7 @@ import React from 'react';
 
 const HangmanFigure = () => {
   return (
-    <svg height="200" width="200">
+    <svg height="200" width="200" stroke="#e4bb7c" fill="none">
       {/* Rod */}
       <line x1="60" y1="20" x2="140" y2="20" />
       <line x1="140" y1="20" x2="140" y2="50" />
