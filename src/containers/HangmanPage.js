@@ -70,10 +70,11 @@ const HangmanPage = () => {
           justifyContent: 'space-between',
           alignItems: 'flex-end',
           width: '100%',
+          margin: '3rem',
         }}
       >
         <HangmanFigure />
-        <IncorrectLetters />
+        <IncorrectLetters incorrectLetters={incorrectLetters} />
       </Box>
       <SecretWord secretWord={secretWord} correctLetters={correctLetters} />
       <GameOverBackdrop />
