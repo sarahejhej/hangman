@@ -11,6 +11,8 @@ import GameOverBackdrop from '../components/GameOverBackdrop';
 import Notification from '../components/Notification';
 import Error from '../components/Error/Error';
 
+import { useRandomWord } from '../hooks/useRandomWord';
+
 const MAX_NUMBER_OF_INCORRECT_GUESSES = 8;
 
 const HangmanPage = () => {
@@ -20,14 +22,17 @@ const HangmanPage = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [gameOverStatus, setGameOverStatus] = useState('');
 
-  const secretWord = 'hangman';
+  const { data, error } = useRandomWord();
+
+  const secretWord = data && data.word;
+  useEffect(() => {}, [playable]);
 
   const handleKeyDown = event => {
     const { key, keyCode } = event;
     if (playable && keyCode >= 65 && keyCode <= 90) {
       const letter = key.toLowerCase();
 
-      if (secretWord.includes(letter)) {
+      if (secretWord && secretWord.includes(letter)) {
         if (!correctLetters.includes(letter)) {
           setCorrectLetters(preValue => [...preValue, letter]);
         } else {
@@ -53,7 +58,10 @@ const HangmanPage = () => {
   );
 
   const checkGame = () => {
-    if (secretWord.split('').every(letter => correctLetters.includes(letter))) {
+    if (
+      secretWord &&
+      secretWord.split('').every(letter => correctLetters.includes(letter))
+    ) {
       setGameOverStatus('win');
       setPlayable(false);
     }
@@ -65,7 +73,7 @@ const HangmanPage = () => {
 
   useEffect(() => {
     checkGame();
-  }, [secretWord, correctLetters, incorrectLetters]);
+  }, [correctLetters, incorrectLetters]);
 
   const handlePlayAgain = () => {
     setPlayable(true);
@@ -87,32 +95,44 @@ const HangmanPage = () => {
       }}
     >
       <Header />
-      <Box
-        ml={1}
-        mt={4}
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          width: '100%',
-          margin: '3rem',
-        }}
-      >
-        <HangmanFigure incorrectLetters={incorrectLetters} />
-        <IncorrectLetters incorrectLetters={incorrectLetters} />
-      </Box>
-      <SecretWord secretWord={secretWord} correctLetters={correctLetters} />
-      <GameOverBackdrop
-        secretWord={secretWord}
-        playable={playable}
-        gameOverStatus={gameOverStatus}
-        onPlayAgain={handlePlayAgain}
-      />
-      <Notification
-        showNotification={showNotification}
-        onClose={setShowNotification}
-      />
-      {/* <Error /> */}
+      {error ? (
+        <Error />
+      ) : (
+        <>
+          <Box
+            ml={1}
+            mt={4}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              width: '100%',
+              margin: '3rem',
+            }}
+          >
+            <HangmanFigure incorrectLetters={incorrectLetters} />
+            <IncorrectLetters incorrectLetters={incorrectLetters} />
+          </Box>
+          {secretWord ? (
+            <>
+              <SecretWord
+                secretWord={secretWord}
+                correctLetters={correctLetters}
+              />
+              <GameOverBackdrop
+                secretWord={secretWord}
+                playable={playable}
+                gameOverStatus={gameOverStatus}
+                onPlayAgain={handlePlayAgain}
+              />
+            </>
+          ) : null}
+          <Notification
+            showNotification={showNotification}
+            onClose={setShowNotification}
+          />
+        </>
+      )}
     </Container>
   );
 };
