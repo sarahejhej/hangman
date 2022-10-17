@@ -11,11 +11,15 @@ import GameOverBackdrop from '../components/GameOverBackdrop';
 import Notification from '../components/Notification';
 import Error from '../components/Error/Error';
 
+const MAX_NUMBER_OF_INCORRECT_GUESSES = 8;
+
 const HangmanPage = () => {
   const [playable, setPlayable] = useState(true);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [incorrectLetters, setIncorrectLetters] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
+  const [gameOverStatus, setGameOverStatus] = useState('');
+
   const secretWord = 'hangman';
 
   const handleKeyDown = event => {
@@ -48,6 +52,27 @@ const HangmanPage = () => {
     [correctLetters, incorrectLetters, playable]
   );
 
+  const checkGame = () => {
+    if (secretWord.split('').every(letter => correctLetters.includes(letter))) {
+      setGameOverStatus('win');
+      setPlayable(false);
+    }
+    if (incorrectLetters.length === MAX_NUMBER_OF_INCORRECT_GUESSES) {
+      setPlayable(false);
+      setGameOverStatus('lose');
+    }
+  };
+
+  useEffect(() => {
+    checkGame();
+  }, [secretWord, correctLetters, incorrectLetters]);
+
+  const handlePlayAgain = () => {
+    setPlayable(true);
+    setCorrectLetters([]);
+    setIncorrectLetters([]);
+  };
+
   return (
     <Container
       sx={{
@@ -77,7 +102,12 @@ const HangmanPage = () => {
         <IncorrectLetters incorrectLetters={incorrectLetters} />
       </Box>
       <SecretWord secretWord={secretWord} correctLetters={correctLetters} />
-      <GameOverBackdrop />
+      <GameOverBackdrop
+        secretWord={secretWord}
+        playable={playable}
+        gameOverStatus={gameOverStatus}
+        onPlayAgain={handlePlayAgain}
+      />
       <Notification
         showNotification={showNotification}
         onClose={setShowNotification}
