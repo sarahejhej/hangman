@@ -73,7 +73,7 @@ const HangmanPage = () => {
           margin: '3rem',
         }}
       >
-        <HangmanFigure />
+        <HangmanFigure incorrectLetters={incorrectLetters} />
         <IncorrectLetters incorrectLetters={incorrectLetters} />
       </Box>
       <SecretWord secretWord={secretWord} correctLetters={correctLetters} />
